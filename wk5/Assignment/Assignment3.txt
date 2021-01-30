@@ -1,0 +1,50 @@
+-- Teradata Assignment 3: Final querying with the Dillard's database
+
+-- Setting the Dillard's database to be the default
+DATABASE ua_dillards;
+
+-- question 2: polo fas brand and size/color
+SELECT DISTINCT(sku), brand, color, size
+FROM skuinfo
+WHERE brand LIKE '%Polo fas%' AND 
+	(size LIKE '%XXL%' OR
+	color = 'black')
+
+
+-- question 3: month with 11 days
+SELECT strinfo.store, EXTRACT(YEAR FROM saledate), EXTRACT(MONTH FROM saledate), COUNT(DISTINCT EXTRACT(DAY FROM saledate)), city, state
+FROM strinfo, trnsact
+WHERE strinfo.store = trnsact.store
+GROUP BY strinfo.store, EXTRACT(MONTH FROM saledate), EXTRACT(YEAR FROM saledate), city, state
+ORDER BY COUNT(DISTINCT EXTRACT(DAY FROM saledate))
+
+
+-- question 4: sku with greatest increase in sales from nov to dec
+SELECT EXTRACT(MONTH FROM saledate), SUM(amt * quantity) AS TotalRevenue
+FROM trnsact
+WHERE EXTRACT(MONTH FROM saledate) = 11 OR EXTRACT(MONTH FROM saledate) = 12
+GROUP BY EXTRACT(MONTH FROM saledate)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

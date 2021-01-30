@@ -1,0 +1,116 @@
+-- Teradata Assignment 1: Introductory querying with the Dillard's database
+
+-- Setting the Dillard's database to be the default
+DATABASE ua_dillards;
+
+-- describing specified table and columns
+HELP TABLE trnsact;
+HELP COLUMN trnsact.register;
+
+-- displaying source code for table creation
+-- to obtain metadata, and key information
+SHOW TABLE trnsact;
+
+-- question 1: data base schema
+HELP TABLE strinfo;
+SHOW TABLE strinfo;
+
+HELP TABLE store_msa;
+SHOW TABLE store_msa;
+
+HELP TABLE skstinfo;
+SHOW TABLE skstinfo;
+
+HELP TABLE trnsact;
+SHOW TABLE trnsact;
+
+HELP TABLE skuinfo;
+SHOW TABLE skuinfo;
+
+HELP TABLE deptinfo;
+SHOW TABLE deptinfo;
+
+-- Exercise 2: examining examples of data in Dillard's
+
+-- quiz question 6: columns of strinfo with nulls
+SELECT * 
+FROM strinfo
+WHERE city IS NULL or state IS NULL or zip IS NULL;
+
+-- quiz question 7: original price of sku 3631365
+SELECT orgprice 
+FROM trnsact
+WHERE sku = 3631365
+ORDER BY orgprice DESC;
+
+-- exercise 3: distinct data values
+SELECT DISTINCT(brand) 
+FROM skuinfo
+ORDER BY brand ASC;
+
+-- quiz question 8: liz clairborne, color
+SELECT color, sku 
+FROM skuinfo
+WHERE brand = 'LIZ CLAI'
+ORDER BY sku DESC;
+
+-- quiz question 10: highest original priced item
+SELECT TOP 10 sku, orgprice
+FROM trnsact 
+ORDER BY orgprice DESC;
+
+-- quiz question 11: stores across states
+SELECT DISTINCT(state)
+FROM strinfo;
+
+-- quiz question 12: departments beginning with 'e'
+SELECT DISTINCT(deptdesc)
+FROM deptinfo
+WHERE deptdesc LIKE 'e%';
+
+-- quiz question 13: earliest sales date of original price not equal sales price
+SELECT TOP 10 saledate, sprice, orgprice, (orgprice - sprice) AS margin 
+FROM trnsact
+WHERE sprice <> orgprice
+ORDER BY saledate ASC, margin DESC;
+
+-- quiz question 14: highest sales and original price register
+SELECT TOP 10 register, sprice, orgprice, saledate 
+FROM trnsact
+WHERE saledate BETWEEN '2004-08-01' AND '2004-08-10'
+ORDER BY orgprice DESC, sprice DESC;
+
+-- quiz question 15: brands containing 'liz'
+SELECT DISTINCT(brand)
+FROM skuinfo
+WHERE brand LIKE '%liz%';
+
+-- quiz question 16: lowest store number
+SELECT TOP 10 store
+FROM store_msa
+WHERE city = 'little rock' OR city = 'memphis' OR city = 'tulsa'
+ORDER BY store ASC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

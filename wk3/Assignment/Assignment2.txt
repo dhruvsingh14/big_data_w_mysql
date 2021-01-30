@@ -1,0 +1,135 @@
+-- Teradata Assignment 2: Intermediate querying with the Dillard's database
+
+-- Setting the Dillard's database to be the default
+DATABASE ua_dillards;
+
+-- Exercise 1: Using Count and Distinct on table columns
+SELECT sku, retail, cost, COUNT(sku)
+FROM skstinfo 
+GROUP BY sku, retail, cost
+
+SELECT DISTINCT(zip), city, state, zip
+FROM strinfo
+GROUP BY city, state, zip
+
+-- question 3: total sum of purchases greatest
+SELECT SUM(sprice) AS TotalPrice, SUM(quantity) AS TotalQty, SUM(sprice * quantity) AS TotalPuchases, saledate
+FROM trnsact
+GROUP BY saledate
+ORDER BY TotalPuchases DESC; 
+
+-- question 4: most skus by dept
+SELECT deptdesc, COUNT(skuinfo.sku)
+FROM skuinfo, deptinfo
+WHERE skuinfo.dept = deptinfo.dept
+GROUP BY deptdesc
+ORDER BY COUNT(skuinfo.sku) DESC
+
+-- question 5: most distinct skus
+-- skuinfo: 1,564,178
+SELECT COUNT(DISTINCT sku)
+FROM skuinfo
+
+-- skstinfo: 760,212
+SELECT COUNT(DISTINCT sku)
+FROM skstinfo
+
+-- trnsact: 714,499
+SELECT COUNT(DISTINCT sku)
+FROM trnsact
+
+-- question 6: skstinfo skus - (inner join skus)
+-- skuinfo inner join skstinfo: 760,212
+SELECT COUNT(DISTINCT skstinfo.sku)
+FROM skuinfo, skstinfo
+WHERE skuinfo.sku = skstinfo.sku 
+
+-- question 7: average daily profits
+SELECT AVG(retail - cost) AS AvgProfits, saledate
+FROM strinfo, skstinfo, trnsact
+WHERE strinfo.store = skstinfo.store AND strinfo.store = trnsact.store
+GROUP BY saledate
+ORDER BY AvgProfits DESC
+
+-- question 8: store msa stats
+SELECT state, COUNT(msa_name), msa_income, msa_pop, msa_name
+FROM store_msa
+WHERE state = 'NC'
+GROUP BY state, msa_name, msa_income, msa_pop
+ORDER BY msa_pop ASC, msa_income DESC
+
+-- question 9: dept with highest sales
+SELECT dept, deptdesc, brand, style, color, SUM(quantity) AS TotalSales
+FROM deptinfo, skuinfo, trnsact
+WHERE deptinfo.dept = skuinfo.dept AND skuinfo.sku = trnsact.sku
+GROUP BY dept, depdesc, brand, style, color 
+ORDER BY TotalSales DESC
+
+-- question 10: more than 180,000 skus
+SELECT strinfo.store, COUNT(sku)
+FROM strinfo, skstinfo
+WHERE strinfo.store = skstinfo.store
+GROUP BY strinfo.store
+HAVING COUNT(sku) > 180000
+
+-- question 11: cop dept, federal brand, rinse wash color
+SELECT DISTINCT(sku), skuinfo.dept, deptdesc, brand, color, size, style, vendor, packsize
+FROM skuinfo, deptinfo
+WHERE skuinfo.dept = deptinfo.dept AND
+	deptdesc LIKE '%cop%' AND
+	brand LIKE '%federal%' AND
+	color LIKE '%rinse wash%'
+
+-- question 12: skstinfo skus - (inner join skus)
+-- referring to question 6
+1,564,178 - 760,212
+
+-- question 13: city, state with highest sales store
+SELECT store_msa.store, city, state, SUM(quantity) AS TotalSales
+FROM store_msa, trnsact
+WHERE store_msa.store = trnsact.store
+GROUP BY state, city, store_msa.store
+ORDER BY TotalSales DESC
+
+-- question 15: states with more than 10 dillards stores
+SELECT state, COUNT(store)
+FROM store_msa
+GROUP BY state
+HAVING COUNT(store) > 10
+
+-- question 16: suggested retail price reebok dept, sketchers brand, wht/sapphire color 
+SELECT skuinfo.sku, deptdesc, brand, color, retail
+FROM skuinfo, deptinfo, skstinfo
+WHERE skuinfo.dept = deptinfo.dept AND skuinfo.sku = skstinfo.sku AND
+	deptdesc LIKE '%reebok%' AND
+	brand LIKE '%skechers%' AND
+	color LIKE '%wht/saphire%'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
